@@ -72,7 +72,33 @@
                     
                 </article>
             </div>
+            <div class="github-controls">
+
             <h3>My GitHub Repositories</h3>
+
+            <div class="github-controls">
+
+                <input
+                    type="search"
+                    id="github-search"
+                    placeholder="Search repositories..."
+                    aria-label="Search GitHub repositories"
+                    disabled
+                >
+
+                <select id="github-language" aria-label="Filter repositories by language" disabled>
+                    <option value="all">All Languages</option>
+                </select>
+
+                <select id="github-sort" aria-label="Sort GitHub repositories" disabled>
+                    <option value="updated">Recently Updated</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="stars">Most Stars</option>
+                </select>
+
+            </div>
+
+            <p id="github-results" role="status" aria-live="polite"></p>
 
             <div id="github-repos">
                 <p>Loading GitHub repositories...</p>

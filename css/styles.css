@@ -389,3 +389,75 @@ body.dark-mode .github-card a {
         transition: none;
     }
 }
+
+
+
+/* GitHub search, filter, and sorting controls */
+.github-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+/* Search input and dropdown menus */
+.github-controls input,
+.github-controls select {
+    flex: 1;
+    min-width: 180px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    color: #222;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+/* Highlight the selected control */
+.github-controls input:focus,
+.github-controls select:focus {
+    outline: 2px solid #217c26;
+    outline-offset: 2px;
+}
+
+/* Disabled controls while loading */
+.github-controls input:disabled,
+.github-controls select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Repository results counter */
+#github-results {
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Dark mode for GitHub controls */
+body.dark-mode .github-controls input,
+body.dark-mode .github-controls select {
+    background-color: #2a2a2a;
+    color: #f5f5f5;
+    border-color: #555;
+}
+
+body.dark-mode #github-results {
+    color: #ccc;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+    .github-controls {
+        flex-direction: column;
+    }
+
+    .github-controls input,
+    .github-controls select {
+        flex: none;
+        width: 100%;
+        min-width: 0;
+    }
+}
