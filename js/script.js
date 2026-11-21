@@ -126,8 +126,80 @@ const githubSearch = document.getElementById("github-search");
 const githubLanguage = document.getElementById("github-language");
 const githubSort = document.getElementById("github-sort");
 const githubResults = document.getElementById("github-results");
+const githubReset = document.getElementById("github-reset");
 
 let githubRepositories = [];
+
+function saveGitHubPreferences() {
+    const preferences = {
+        search: githubSearch.value,
+        language: githubLanguage.value,
+        sort: githubSort.value
+    };
+
+    localStorage.setItem(
+        "githubPreferences",
+        JSON.stringify(preferences)
+    );
+}
+
+
+function restoreGitHubPreferences() {
+    // Start with the default preferences
+    githubSearch.value = "";
+    githubLanguage.value = "all";
+    githubSort.value = "updated";
+
+    let savedPreferences;
+
+    try {
+        savedPreferences = JSON.parse(
+            localStorage.getItem("githubPreferences")
+        );
+    } catch (error) {
+        console.error("Invalid saved GitHub preferences:", error);
+        localStorage.removeItem("githubPreferences");
+        return;
+    }
+
+    if (!savedPreferences ||
+        typeof savedPreferences !== "object" ||
+        Array.isArray(savedPreferences)) {
+        return;
+    }
+
+    // Restore search text
+    if (typeof savedPreferences.search === "string") {
+        githubSearch.value = savedPreferences.search;
+    }
+
+    // Restore language if it is still available
+    const availableLanguages = Array.from(githubLanguage.options)
+        .map(function(option) {
+            return option.value;
+        });
+
+    if (availableLanguages.includes(savedPreferences.language)) {
+        githubLanguage.value = savedPreferences.language;
+    }
+
+    // Restore sorting if the saved option is valid
+    const validSortOptions = ["updated", "name", "stars"];
+
+    if (validSortOptions.includes(savedPreferences.sort)) {
+        githubSort.value = savedPreferences.sort;
+    }
+}
+
+function resetGitHubPreferences() {
+    githubSearch.value = "";
+    githubLanguage.value = "all";
+    githubSort.value = "updated";
+
+    localStorage.removeItem("githubPreferences");
+
+    updateGitHubProjects();
+}
 
 // Fetch repositories from GitHub
 async function loadGitHubProjects() {
@@ -136,6 +208,7 @@ async function loadGitHubProjects() {
     githubSearch.disabled = true;
     githubLanguage.disabled = true;
     githubSort.disabled = true;
+    githubReset.disabled = true;
 
     githubContainer.textContent = "Loading GitHub repositories...";
     githubResults.textContent = "";
@@ -185,7 +258,9 @@ async function loadGitHubProjects() {
         githubSearch.disabled = false;
         githubLanguage.disabled = false;
         githubSort.disabled = false;
+        githubReset.disabled = false;
 
+        restoreGitHubPreferences();
         updateGitHubProjects();
 
     } catch (error) {
@@ -199,6 +274,7 @@ async function loadGitHubProjects() {
         githubSearch.disabled = true;
         githubLanguage.disabled = true;
         githubSort.disabled = true;
+        githubReset.disabled = true;
     }
 }
 
@@ -285,9 +361,16 @@ function displayGitHubProjects(repositories) {
 }
 
 // Event listeners for the controls
-githubSearch.addEventListener("input", updateGitHubProjects);
-githubLanguage.addEventListener("change", updateGitHubProjects);
-githubSort.addEventListener("change", updateGitHubProjects);
+
+function handleGitHubPreferencesChange() {
+    saveGitHubPreferences();
+    updateGitHubProjects();
+}
+
+githubSearch.addEventListener("input", handleGitHubPreferencesChange);
+githubLanguage.addEventListener("change", handleGitHubPreferencesChange);
+githubSort.addEventListener("change", handleGitHubPreferencesChange);
+githubReset.addEventListener("click", resetGitHubPreferences);
 
 // Load repositories when the page opens
 loadGitHubProjects();
